@@ -5,7 +5,9 @@ import torch
 # --- 기본 설정 ---
 # 데이터 경로 (필요 시 실제 경로로 수정)
 # ROOT_DIRECTORY = "path/to/your/dataset"
-ROOT_DIRECTORY = "."
+# ROOT_DIRECTORY = "."
+ROOT_DIRECTORY = "/kaggle/input/train-pill"
+
 TRAIN_IMAGE_DIRECTORY = "train_images"
 # 체크포인트 저장 경로
 CHECKPOINT_DIR = "checkpoints"
