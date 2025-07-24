@@ -1,0 +1,7 @@
+# requirements.in
+
+# 1. pip에게 전달할 특별 옵션을 여기에 적습니다.
+--extra-index-url https://download.pytorch.org/whl/cu128
+
+# 2. pyproject.toml에 정의된 의존성을 참조하라는 지시를 합니다.
+-e .

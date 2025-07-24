@@ -21,6 +21,7 @@ class PillDataset(torch.utils.data.Dataset):
 
         self.class_ids = sorted(self.cat_to_id.values())
         self.map_cat_id_to_label = {cat_id: i + 1 for i, cat_id in enumerate(self.class_ids)}
+        self.map_label_to_cat_id = {v: k for k, v in self.map_cat_id_to_label.items()}
 
         self.image_paths = sorted(glob.glob(os.path.join(self.root, 'train_images', '*.png')))
         self.image_to_labels = self._get_all_labels()
