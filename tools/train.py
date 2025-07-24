@@ -23,7 +23,7 @@ def main():
     # 데이터셋 준비
     dataset = PillDataset(
         root=cfg.ROOT_DIRECTORY, 
-        transforms=get_transform(train=True),
+        transforms=get_transform(train=False),
         min_box_size=cfg.MIN_BOX_SIZE)
     dataset_val = PillDataset(
         root=cfg.ROOT_DIRECTORY, 
