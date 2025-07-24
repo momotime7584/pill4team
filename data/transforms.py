@@ -29,21 +29,21 @@ def get_transform(train: bool):
         # 훈련용 데이터 증강 파이프라인
         return A.Compose([
             # --- 기하학적 변환 ---
-            A.HorizontalFlip(p=0.5),
-            # A.VerticalFlip(p=0.5), # 알약의 위아래가 중요할 수 있으므로 선택적으로 사용
-            A.Rotate(limit=30, p=0.5, border_mode=cv2.BORDER_CONSTANT, value=0),
+            # A.HorizontalFlip(p=0.5),
+            # # A.VerticalFlip(p=0.5), # 알약의 위아래가 중요할 수 있으므로 선택적으로 사용
+            # A.Rotate(limit=30, p=0.5, border_mode=cv2.BORDER_CONSTANT, value=0),
             
-            # --- 크기 및 위치 변환 ---
-            # 이미지를 모델 입력 크기에 맞게 리사이즈합니다.
-            # 작은 객체가 잘려나가지 않도록 LongestMaxSize를 사용하는 것이 안전할 수 있습니다.
-            A.LongestMaxSize(max_size=IMG_SIZE, p=1.0),
-            A.PadIfNeeded(min_height=IMG_SIZE, min_width=IMG_SIZE, p=1.0, border_mode=cv2.BORDER_CONSTANT, value=0),
+            # # --- 크기 및 위치 변환 ---
+            # # 이미지를 모델 입력 크기에 맞게 리사이즈합니다.
+            # # 작은 객체가 잘려나가지 않도록 LongestMaxSize를 사용하는 것이 안전할 수 있습니다.
+            # A.LongestMaxSize(max_size=IMG_SIZE, p=1.0),
+            # A.PadIfNeeded(min_height=IMG_SIZE, min_width=IMG_SIZE, p=1.0, border_mode=cv2.BORDER_CONSTANT, value=0),
 
-            # --- 색상 변환 ---
-            A.RandomBrightnessContrast(brightness_limit=0.2, contrast_limit=0.2, p=0.75),
-            A.ColorJitter(brightness=0.1, contrast=0.1, saturation=0.1, hue=0.1, p=0.5),
-            A.ISONoise(p=0.3),
-            A.GaussNoise(p=0.3),
+            # # --- 색상 변환 ---
+            # A.RandomBrightnessContrast(brightness_limit=0.2, contrast_limit=0.2, p=0.75),
+            # A.ColorJitter(brightness=0.1, contrast=0.1, saturation=0.1, hue=0.1, p=0.5),
+            # A.ISONoise(p=0.3),
+            # A.GaussNoise(p=0.3),
 
             # --- 최종 변환 ---
             A.Normalize(mean=MEAN, std=STD),
@@ -52,8 +52,8 @@ def get_transform(train: bool):
     else:
         # 검증/테스트용 변환 파이프라인 (증강 없음)
         return A.Compose([
-            A.LongestMaxSize(max_size=IMG_SIZE, p=1.0),
-            A.PadIfNeeded(min_height=IMG_SIZE, min_width=IMG_SIZE, p=1.0, border_mode=cv2.BORDER_CONSTANT, value=0),
+            # A.LongestMaxSize(max_size=IMG_SIZE, p=1.0),
+            # A.PadIfNeeded(min_height=IMG_SIZE, min_width=IMG_SIZE, p=1.0, border_mode=cv2.BORDER_CONSTANT, value=0),
             A.Normalize(mean=MEAN, std=STD),
             ToTensorV2(),
         ], bbox_params=BBOX_PARAMS)
