@@ -1,5 +1,6 @@
 # configs/base_config.py
 import torch
+import os
 
 # --- 설정 변수 ---
 # --- 기본 설정 ---
@@ -11,6 +12,7 @@ ROOT_DIRECTORY = "/kaggle/input/train-pill"
 TRAIN_IMAGE_DIRECTORY = "train_images"
 # 체크포인트 저장 경로
 CHECKPOINT_DIR = "checkpoints"
+TEST_DIRECTORY = os.path.join(ROOT_DIRECTORY, 'test_images')
 
 # --- 훈련 설정 ---
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
@@ -55,3 +57,5 @@ fast_rcnn_model = dict(
     box_nms_thresh=0.5,
     box_detections_per_img=100
 )
+# 점수 임계값
+SCORE_THRESHOLD = 0.5

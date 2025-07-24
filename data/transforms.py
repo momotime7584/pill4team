@@ -62,6 +62,7 @@ def get_basic_transform():
     transforms = []
     transforms.append(T.ToImage())
     transforms.append(T.ToDtype(torch.float32, scale=True))
+    transforms.append(T.Normalize(mean=MEAN, std=STD)) # 정규화 추가
     return T.Compose(transforms)
 
 
@@ -69,8 +70,10 @@ def get_transform_old(train: bool):
     transforms = []
     transforms.append(T.ToImage())
     transforms.append(T.ToDtype(torch.float32, scale=True))
-    # if train:
-    #     transforms.append(T.RandomHorizontalFlip(0.5))
+    transforms.append(T.Normalize(mean=MEAN, std=STD))#정규화 추가
+    if train:
+        transforms.append(T.RandomVerticalFlip(0.5)) # 수직 뒤집기로 변경
+        
     return T.Compose(transforms)
 
 
