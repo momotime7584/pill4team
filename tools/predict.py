@@ -7,12 +7,12 @@ from tqdm.auto import tqdm
 from torch.utils.data import DataLoader
 from PIL import Image
 import glob, os
+import numpy as np
 # 로컬 모듈 임포트
 from configs import base_config as cfg
 from data.dataset import PillDataset # '매핑 정보'를 얻기 위해 임포트
 # from models.faster_rcnn import create_faster_rcnn_model
 from models import create_model
-
 from data.transforms import get_transform
 
 # 테스트 데이터셋을 위한 간단한 클래스 (라벨이 없음)
@@ -23,7 +23,7 @@ class PillTestDataset(torch.utils.data.Dataset):
 
     def __getitem__(self, idx):
         img_path = self.image_paths[idx]
-        image = Image.open(img_path).convert("RGB")
+        image = np.array(Image.open(img_path).convert("RGB"))
         if self.transforms:
             # img, _ = self.transforms(image=img, labels=None) # 타겟이 없으므로 None 전달
             transformed = self.transforms(image=image, boxes=None, labels=None) # 타겟이 없으므로 None 전달
