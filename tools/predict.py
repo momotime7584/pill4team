@@ -23,9 +23,12 @@ class PillTestDataset(torch.utils.data.Dataset):
 
     def __getitem__(self, idx):
         img_path = self.image_paths[idx]
-        img = Image.open(img_path).convert("RGB")
+        image = Image.open(img_path).convert("RGB")
         if self.transforms:
-            img, _ = self.transforms(img, None) # 타겟이 없으므로 None 전달
+            # img, _ = self.transforms(image=img, labels=None) # 타겟이 없으므로 None 전달
+            transformed = self.transforms(image=image, boxes=None, labels=None) # 타겟이 없으므로 None 전달
+            img = transformed['image']
+
         return img, os.path.basename(img_path)
 
     def __len__(self):
