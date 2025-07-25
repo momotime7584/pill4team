@@ -61,4 +61,5 @@ fast_rcnn_model = dict(
 SCHEDULER_STEP_SIZE = 30 # or 5
 
 # 점수 임계값
-SCORE_THRESHOLD = 0.5
+SCORE_THRESHOLD = 0.1 # 0.5
+NMS_THRESHOLD = 0.3 # 0.5

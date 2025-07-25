@@ -84,10 +84,17 @@ def main():
                 # 점수 임계값보다 높은 예측만 선택
                 keep = output['scores'] > args.score_threshold
                 
+                keep_nms = torchvision.ops.nms(boxes, scores, cfg.NMS_THRESHOLD)
+
                 # keep 마스크를 사용하여 필터링된 텐서들을 CPU로 이동
-                boxes_cpu = output['boxes'][keep].cpu()
-                labels_cpu = output['labels'][keep].cpu()
-                scores_cpu = output['scores'][keep].cpu()
+                boxes_cpu = output['boxes'][keep_nms].cpu()
+                labels_cpu = output['labels'][keep_nms].cpu()
+                scores_cpu = output['scores'][keep_nms].cpu()
+
+                # 후처리 (위와 같은 로직)
+                # pred = model.postprocess([output], 
+                #                score_threshold=cfg.SCORE_THRESHOLD,
+                #                nms_threshold=cfg.NMS_THRESHOLD)[0]
 
                 for box, label, score in zip(boxes_cpu, labels_cpu, scores_cpu):
                     # --- 여기서 변환이 일어납니다! ---
@@ -99,7 +106,7 @@ def main():
 
                     results.append({
                         # TODO: int 필요한지 알아보기
-                        'image_id': os.path.splitext(filenames[i])[0], # 예: '123.png' -> 123
+                        'image_id': int(os.path.splitext(filenames[i])[0]), # 예: '123.png' -> 123
                         'category_id': original_category_id,
                         'score': score.item(),
                         'bbox_x': x, 'bbox_y': y, 'bbox_w': w, 'bbox_h': h,
