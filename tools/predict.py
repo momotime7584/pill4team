@@ -85,13 +85,18 @@ def main():
                 # 점수 임계값보다 높은 예측만 선택
                 keep = output['scores'] > args.score_threshold
                 
+
+                boxes = output['boxes'][keep]
+                labels = output['labels'][keep]
+                scores = output['scores'][keep]
+
                 keep_nms = torchvision.ops.nms(boxes, scores, cfg.NMS_THRESHOLD)
 
-                # keep 마스크를 사용하여 필터링된 텐서들을 CPU로 이동
+                # keep nms 마스크를 사용하여 필터링된 텐서들을 CPU로 이동
                 boxes_cpu = output['boxes'][keep_nms].cpu()
                 labels_cpu = output['labels'][keep_nms].cpu()
                 scores_cpu = output['scores'][keep_nms].cpu()
-
+    
                 # 후처리 (위와 같은 로직)
                 # pred = model.postprocess([output], 
                 #                score_threshold=cfg.SCORE_THRESHOLD,
