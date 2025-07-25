@@ -1,6 +1,7 @@
 # tools/predict.py
 
 import torch
+import torchvision
 import argparse
 import pandas as pd
 from tqdm.auto import tqdm
