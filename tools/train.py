@@ -45,7 +45,7 @@ def main():
     # 모델, 옵티마이저, 콜백 준비
     model = create_model("faster_rcnn", num_classes).to(cfg.DEVICE)
     optimizer = torch.optim.SGD(model.parameters(), lr=cfg.LEARNING_RATE, momentum=cfg.MOMENTUM, weight_decay=cfg.WEIGHT_DECAY)
-    lr_scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=5, gamma=0.1)
+    lr_scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=cfg.SCHEDULER_STEP_SIZE, gamma=0.1)
     
     early_stopper = EarlyStopping(patience=cfg.ES_PATIENCE, verbose=True)
     checkpoint_saver = CheckpointSaver(save_dir=cfg.CHECKPOINT_DIR, top_k=cfg.CS_TOP_K, verbose=True)
@@ -61,7 +61,7 @@ def main():
 
         # 주기에 따라 mAP 계산 여부 결정
         is_map_cycle = (epoch + 1) % cfg.MAP_CALC_CYCLE == 0 or (epoch + 1) == cfg.NUM_EPOCHS
-    
+
         # --- 검증 ---
         model.eval() # 검증/평가 시작 전, 상태를 명시적으로 설정
         avg_val_loss, map_results = evaluate(

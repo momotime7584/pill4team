@@ -19,9 +19,9 @@ DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 # DEVICE = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
 
 NUM_EPOCHS = 20 # or 10
-BATCH_SIZE = 4 # or 2 or 8
+BATCH_SIZE = 8 # or 2 or 8 or 4
 BATCH_SIZE_VAL = 1
-LEARNING_RATE = 0.005
+LEARNING_RATE = 0.001 # 0.005
 # LEARNING_RATE = 0.0005
 MOMENTUM = 0.9
 WEIGHT_DECAY = 0.0005
@@ -57,5 +57,8 @@ fast_rcnn_model = dict(
     box_nms_thresh=0.5,
     box_detections_per_img=100
 )
+ 
+SCHEDULER_STEP_SIZE = 30 # or 5
+
 # 점수 임계값
 SCORE_THRESHOLD = 0.5
