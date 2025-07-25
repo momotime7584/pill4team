@@ -21,14 +21,14 @@ DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 NUM_EPOCHS = 20 # or 10
 BATCH_SIZE = 8 # or 2 or 8 or 4
 BATCH_SIZE_VAL = 1
-LEARNING_RATE = 0.001 # 0.005
+LEARNING_RATE = 0.005 # 0.001
 # LEARNING_RATE = 0.0005
 MOMENTUM = 0.9
 WEIGHT_DECAY = 0.0005
 MAP_CALC_CYCLE = 5
 
 # [추가] 그래디언트 클리핑에 사용할 최대 norm 값 (0 이하면 비활성화)
-GRADIENT_CLIP_NORM = 1.0 
+GRADIENT_CLIP_NORM = 5.0  # 1.0
 
 # --- 콜백 설정 ---
 # EarlyStopping
