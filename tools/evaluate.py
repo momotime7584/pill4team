@@ -49,7 +49,7 @@ def main():
     # --- 데이터셋 준비 ---
     # 평가 시에는 데이터 증강을 하지 않으므로 train=False
     dataset_eval = PillDataset(root=ROOT_DIRECTORY, transforms=get_transform(train=False))
-    num_classes = len(dataset_eval.map_cat_id_to_label) + 1
+    num_classes = dataset_eval.get_num_classes()
     
     # 평가 시에는 전체 데이터셋을 사용
     # 이 부분은 실제 데이터 구조에 따라 달라질 수 있습니다.

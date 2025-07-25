@@ -30,7 +30,7 @@ def main():
         transforms=get_transform(train=False),
         min_box_size=cfg.MIN_BOX_SIZE)
 
-    num_classes = len(dataset.map_cat_id_to_label) + 1
+    num_classes = dataset.get_num_classes()
 
     # 훈련/검증 데이터셋 분할
     indices = torch.randperm(len(dataset)).tolist()

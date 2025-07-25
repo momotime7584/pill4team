@@ -10,7 +10,9 @@ import glob, os
 # 로컬 모듈 임포트
 from configs import base_config as cfg
 from data.dataset import PillDataset # '매핑 정보'를 얻기 위해 임포트
-from models.faster_rcnn import create_faster_rcnn_model
+# from models.faster_rcnn import create_faster_rcnn_model
+from models import create_model
+
 from data.transforms import get_transform
 
 # 테스트 데이터셋을 위한 간단한 클래스 (라벨이 없음)
@@ -49,12 +51,14 @@ def main():
     print("라벨 매핑 정보 로딩 중...")
     train_dataset = PillDataset(root=cfg.ROOT_DIRECTORY)
     label_to_cat_id = train_dataset.map_label_to_cat_id
-    num_classes = len(train_dataset.class_ids) + 1
+    num_classes = train_dataset.get_num_classes()
     print("매핑 정보 로딩 완료.")
 
     # --- 2. 모델 로드 ---
     device = torch.device(cfg.DEVICE)
-    model = create_faster_rcnn_model(num_classes)
+    # model = create_faster_rcnn_model(num_classes)
+    model = create_model("faster_rcnn", num_classes).to(cfg.DEVICE)
+
     model.load_state_dict(torch.load(args.checkpoint, map_location=device))
     model.to(device)
     model.eval()
