@@ -45,7 +45,7 @@ def main():
     # 모델, 옵티마이저, 콜백 준비
     model = create_model("faster_rcnn", num_classes).to(cfg.DEVICE)
     optimizer = torch.optim.SGD(model.parameters(), lr=cfg.LEARNING_RATE, momentum=cfg.MOMENTUM, weight_decay=cfg.WEIGHT_DECAY)
-    optimizer = torch.optim.Adam(model.parameters(), lr=cfg.LEARNING_RATE, weight_decay=cfg.WEIGHT_DECAY)
+    optimizer = torch.optim.AdamW(model.parameters(), lr=cfg.LEARNING_RATE, weight_decay=cfg.WEIGHT_DECAY, betas=(0.9, 0.999))
     lr_scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=cfg.SCHEDULER_STEP_SIZE, gamma=0.1)
     lr_scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(
                 optimizer,
