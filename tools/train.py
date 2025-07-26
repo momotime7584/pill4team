@@ -51,6 +51,9 @@ def main():
                 optimizer,
                 T_max=cfg.NUM_EPOCHS
             )
+    lr_scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, mode='min', factor=0.1, patience=cfg.LR_PATIENCE, verbose=True, min_lr=1e-6)
+
+    
     early_stopper = EarlyStopping(patience=cfg.ES_PATIENCE, verbose=True)
     checkpoint_saver = CheckpointSaver(save_dir=cfg.CHECKPOINT_DIR, top_k=cfg.CS_TOP_K, verbose=True)
 
@@ -79,7 +82,7 @@ def main():
         # if (epoch + 1) % 5 == 0 or epoch == cfg.NUM_EPOCHS - 1:
         #     map_results = calculate_map(...)
 
-        lr_scheduler.step()
+        lr_scheduler.step(avg_val_loss) # ReduceLROnPlateau는 검증 손실을 인자로 받음
 
         # 로그 출력부 수정
         log_message = f"Epoch {epoch+1}: TrainLoss={avg_train_loss:.4f}, ValidLoss={avg_val_loss:.4f}"

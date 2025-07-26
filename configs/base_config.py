@@ -34,6 +34,9 @@ GRADIENT_CLIP_NORM = 5.0  # 1.0
 # EarlyStopping
 ES_PATIENCE = 5
 # CheckpointSaver
+
+# ReduceLROnPlateau
+LR_PATIENCE = 3
 CS_TOP_K = 3
 
 # --- 데이터셋 설정 ---
