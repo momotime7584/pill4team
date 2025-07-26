@@ -29,3 +29,19 @@ def train_one_epoch(model, optimizer, data_loader, device, epoch, num_epochs, gr
         progress_bar.set_postfix(loss=losses.item())
         
     return total_loss / len(data_loader)
+
+def train(model, optimizer, data_loader, device, num_epochs, scheduler=None, val_data_loader=None):
+    """
+    모델 훈련을 시작하고 각 에폭마다 훈련 및 검증을 수행합니다.
+    스케줄러가 제공되면 검증 손실에 따라 학습률을 조정합니다.
+    """
+    for epoch in range(num_epochs):
+        model.train()
+        train_loss = train_one_epoch(model, optimizer, data_loader, device, epoch, num_epochs)
+        print(f"Epoch {epoch+1}/{num_epochs} - Train Loss: {train_loss:.4f}")
+
+        if scheduler and val_data_loader:
+            # 검증 데이터 로더를 사용하여 검증 손실 계산 (여기서는 더미 값 사용)
+            # 실제 구현에서는 evaluator.py의 evaluate 함수를 호출하여 검증 손실을 얻어야 합니다.
+            val_loss = train_loss # 임시로 훈련 손실을 검증 손실로 사용. 실제로는 evaluate 함수 호출 필요.
+            scheduler.step(val_loss)

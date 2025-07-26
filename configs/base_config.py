@@ -30,6 +30,10 @@ MAP_CALC_CYCLE = 5
 # [추가] 그래디언트 클리핑에 사용할 최대 norm 값 (0 이하면 비활성화)
 GRADIENT_CLIP_NORM = 5.0  # 1.0
 
+
+# --- 스케줄러 설정 (ReduceLROnPlateau) ---
+SCHEDULER_MODE = 'min' # 'min' 또는 'max'
+SCHEDULER_FACTOR = 0.1
 # --- 콜백 설정 ---
 # EarlyStopping
 ES_PATIENCE = 5
