@@ -45,13 +45,14 @@ def main():
     # 모델, 옵티마이저, 콜백 준비
     model = create_model("faster_rcnn", num_classes).to(cfg.DEVICE)
     optimizer = torch.optim.SGD(model.parameters(), lr=cfg.LEARNING_RATE, momentum=cfg.MOMENTUM, weight_decay=cfg.WEIGHT_DECAY)
-    optimizer = torch.optim.AdamW(model.parameters(), lr=cfg.LEARNING_RATE, weight_decay=cfg.WEIGHT_DECAY, betas=(0.9, 0.999))
+    # optimizer = torch.optim.AdamW(model.parameters(), lr=cfg.ADAM_LEARNING_RATE, weight_decay=cfg.WEIGHT_DECAY, betas=(0.9, 0.999))
     lr_scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=cfg.SCHEDULER_STEP_SIZE, gamma=0.1)
-    lr_scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(
-                optimizer,
-                T_max=cfg.NUM_EPOCHS
-            )
-    lr_scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, mode='min', factor=0.1, patience=cfg.LR_PATIENCE, verbose=True, min_lr=1e-6)
+    # lr_scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(
+    #             optimizer,
+    #             T_max=cfg.NUM_EPOCHS
+    #             T_max=cfg.NUM_EPOCHS // 2 
+    #         )
+    # lr_scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, mode='min', factor=0.1, patience=cfg.LR_PATIENCE, verbose=True, min_lr=1e-6)
 
     
     early_stopper = EarlyStopping(patience=cfg.ES_PATIENCE, verbose=True)
@@ -82,7 +83,8 @@ def main():
         # if (epoch + 1) % 5 == 0 or epoch == cfg.NUM_EPOCHS - 1:
         #     map_results = calculate_map(...)
 
-        lr_scheduler.step(avg_val_loss) # ReduceLROnPlateau는 검증 손실을 인자로 받음
+        # lr_scheduler.step(avg_val_loss) # ReduceLROnPlateau는 검증 손실을 인자로 받음
+        lr_scheduler.step()
 
         # 로그 출력부 수정
         log_message = f"Epoch {epoch+1}: TrainLoss={avg_train_loss:.4f}, ValidLoss={avg_val_loss:.4f}"

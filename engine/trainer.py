@@ -30,7 +30,7 @@ def train_one_epoch(model, optimizer, data_loader, device, epoch, num_epochs, gr
         
     return total_loss / len(data_loader)
 
-def train(model, optimizer, data_loader, device, num_epochs, scheduler=None, val_data_loader=None):
+def train_auto_generated(model, optimizer, data_loader, device, num_epochs, scheduler=None, val_data_loader=None):
     """
     모델 훈련을 시작하고 각 에폭마다 훈련 및 검증을 수행합니다.
     스케줄러가 제공되면 검증 손실에 따라 학습률을 조정합니다.

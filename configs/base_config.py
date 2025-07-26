@@ -67,7 +67,7 @@ fast_rcnn_model = dict(
     box_detections_per_img=100
 )
  
-SCHEDULER_STEP_SIZE = 30 # or 5
+SCHEDULER_STEP_SIZE = 5 # or 30
 
 # 점수 임계값
 SCORE_THRESHOLD = 0.1 # 0.5
