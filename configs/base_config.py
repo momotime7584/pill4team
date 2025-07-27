@@ -21,7 +21,7 @@ DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 # --- 재현성 설정 ---                                        
 SEED = 42
 
-NUM_EPOCHS = 20 # or 10
+NUM_EPOCHS = 30 # or 10 or 20
 BATCH_SIZE = 8 # or 2 or 8 or 4
 BATCH_SIZE_VAL = 1
 LEARNING_RATE = 0.005 # 0.001
