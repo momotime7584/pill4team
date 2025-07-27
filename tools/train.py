@@ -63,8 +63,8 @@ def main():
     # lr_scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=cfg.SCHEDULER_STEP_SIZE, gamma=cfg.SCHEDULER_GAMMA)
     lr_scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(
         optimizer,
-        T_max=cfg.NUM_EPOCHS
-        # T_max=cfg.NUM_EPOCHS // 2
+        # T_max=cfg.NUM_EPOCHS
+        T_max=cfg.NUM_EPOCHS // 2
     )
     # lr_scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, mode=cfg.SCHEDULER_MODE, factor=SCHEDULER_FACTOR, patience=cfg.LR_PATIENCE, verbose=True, min_lr=1e-6)
 
