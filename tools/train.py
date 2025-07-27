@@ -10,23 +10,22 @@ from models import create_model
 from engine.trainer import train_one_epoch
 from engine.evaluator import evaluate
 from engine.callbacks import EarlyStopping, CheckpointSaver
-
-def collate_fn(batch):
-    batch = list(filter(lambda x: x is not None, batch))
-    if not batch: return (None, None)
-    return tuple(zip(*batch))
-
+from utils.data_utils import collate_fn
+from utils.seed_utils import set_seed, worker_init_fn
 
 def main():
+    # 시드 고정 (훈련 시작 전에 호출)
+    set_seed(cfg.SEED) # base_config.py에 SEED 값 추가 필요
+
     print(f"사용할 장치: {cfg.DEVICE}")
 
     # 데이터셋 준비
     dataset = PillDataset(
-        root=cfg.ROOT_DIRECTORY, 
+        root=cfg.ROOT_DIRECTORY,
         transforms=get_transform(train=True),
         min_box_size=cfg.MIN_BOX_SIZE)
     dataset_val = PillDataset(
-        root=cfg.ROOT_DIRECTORY, 
+        root=cfg.ROOT_DIRECTORY,
         transforms=get_transform(train=False),
         min_box_size=cfg.MIN_BOX_SIZE)
 
@@ -39,8 +38,17 @@ def main():
     valid_subset = Subset(dataset_val, indices[train_size:])
 
     # 데이터로더 생성
-    data_loader_train = DataLoader(train_subset, batch_size=cfg.BATCH_SIZE, shuffle=True, num_workers=cfg.NUM_WORKERS, collate_fn=collate_fn)
-    data_loader_valid = DataLoader(valid_subset, batch_size=cfg.BATCH_SIZE_VAL, shuffle=False, num_workers=cfg.NUM_WORKERS, collate_fn=collate_fn)
+    data_loader_train = DataLoader(
+        train_subset, batch_size=cfg.BATCH_SIZE, 
+        shuffle=True, num_workers=cfg.NUM_WORKERS, 
+        collate_fn=collate_fn,
+        worker_init_fn=worker_init_fn if cfg.NUM_WORKERS > 0 else None # num_workers가 0일 때는 None
+    )
+    data_loader_valid = DataLoader(
+        valid_subset, batch_size=cfg.BATCH_SIZE_VAL, shuffle=False, 
+        num_workers=cfg.NUM_WORKERS, collate_fn=collate_fn,
+        worker_init_fn=worker_init_fn if cfg.NUM_WORKERS > 0 else None
+    )
 
     # 모델, 옵티마이저, 콜백 준비
     model = create_model("faster_rcnn", num_classes).to(cfg.DEVICE)
@@ -50,11 +58,11 @@ def main():
     # lr_scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(
     #             optimizer,
     #             T_max=cfg.NUM_EPOCHS
-    #             T_max=cfg.NUM_EPOCHS // 2 
+    #             # T_max=cfg.NUM_EPOCHS // 2
     #         )
     # lr_scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, mode=cfg.SCHEDULER_MODE, factor=SCHEDULER_FACTOR, patience=cfg.LR_PATIENCE, verbose=True, min_lr=1e-6)
 
-    
+
     early_stopper = EarlyStopping(patience=cfg.ES_PATIENCE, verbose=True)
     checkpoint_saver = CheckpointSaver(save_dir=cfg.CHECKPOINT_DIR, top_k=cfg.CS_TOP_K, verbose=True)
 
@@ -63,7 +71,7 @@ def main():
         # --- 훈련 ---
         model.train() # 훈련 시작 전, 상태를 명시적으로 설정
         avg_train_loss = train_one_epoch(
-            model, optimizer, data_loader_train, 
+            model, optimizer, data_loader_train,
             cfg.DEVICE, epoch, cfg.NUM_EPOCHS,
             grad_clip_norm=cfg.GRADIENT_CLIP_NORM)
 
@@ -73,7 +81,7 @@ def main():
         # --- 검증 ---
         model.eval() # 검증/평가 시작 전, 상태를 명시적으로 설정
         avg_val_loss, map_results = evaluate(
-            model, data_loader_valid, 
+            model, data_loader_valid,
             cfg.DEVICE,
             calculate_map_metric=is_map_cycle # 플래그 전달
         )

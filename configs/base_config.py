@@ -18,6 +18,9 @@ TEST_DIRECTORY = os.path.join(ROOT_DIRECTORY, 'test_images')
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 # DEVICE = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
 
+# --- 재현성 설정 ---                                        
+SEED = 42
+
 NUM_EPOCHS = 20 # or 10
 BATCH_SIZE = 8 # or 2 or 8 or 4
 BATCH_SIZE_VAL = 1
