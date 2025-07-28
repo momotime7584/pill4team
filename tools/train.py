@@ -16,12 +16,12 @@ from utils.seed_utils import set_seed, worker_init_fn
 
 def main():
     # 시드 고정 (훈련 시작 전에 호출)
-    # set_seed(cfg.SEED) # base_config.py에 SEED 값 추가 필요
+    set_seed(cfg.SEED) # base_config.py에 SEED 값 추가 필요
 
     # 랜덤 시드 생성 및 고정                                                                
-    seed = random.randint(0, 2**32 - 1)                                                     
-    set_seed(seed)                                                                          
-    print(f"훈련에 사용된 시드: {seed}")  
+    # seed = random.randint(0, 2**32 - 1)                                                     
+    # set_seed(seed)                                                                          
+    # print(f"훈련에 사용된 시드: {seed}")  
 
     print(f"사용할 장치: {cfg.DEVICE}")
 

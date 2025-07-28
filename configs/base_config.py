@@ -19,7 +19,7 @@ DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 # DEVICE = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
 
 # --- 재현성 설정 ---                                        
-SEED = 42
+SEED = 2949708348 # 42
 
 NUM_EPOCHS = 30 # or 10 or 20
 BATCH_SIZE = 8 # or 2 or 8 or 4
