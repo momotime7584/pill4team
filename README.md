@@ -71,6 +71,26 @@
     python tools/evaluate.py --checkpoint [path/to/model] --config configs.another_config
     ```
 
+
+3. **최종 제출 파일 생성 (Prediction for Submission):**
+
+훈련된 모델을 사용하여 테스트 이미지에 대한 예측을 수행하고, 대회 제출 형식의 `submission.csv` 파일을 생성합니다.
+
+   1.  **명령어 실행:**
+       ```bash
+       python tools/predict.py \
+           --checkpoint [사용할 모델의 .pth 파일 경로] \
+           --image_dir [테스트 이미지가 있는 폴더 경로] \
+           --output [결과를 저장할 CSV 파일명 (기본값: submission.csv)]
+       ```
+   2.  **실행 예시:**
+       ```bash
+       python tools/predict.py \
+           --checkpoint checkpoints/EPOCH\(12\)-LOSS\(0.0987\).pth \
+           --image_dir path/to/your/test_images \
+           --output my_submission.csv
+       ```
+
 ## **5. 향후 개발 계획 (Future Work)**
 
 > 이 프로젝트가 나아갈 방향을 제시하여 기여를 유도하고 로드맵을 공유합니다.
