@@ -1,5 +1,9 @@
 # **경구 약제 이미지 검출 프로젝트 (Pill Detection Project)**
 
+## 0. 발표 자료
+[Notion presentatoin](https://purring-pullover-e72.notion.site/Presentation-240e67a1ff23801bb455e4b8deac0c5e?source=copy_link)
+
+
 ## **1. 프로젝트 개요 (Overview)**
 
 본 프로젝트는 이미지 속에 있는 최대 4개의 알약 종류(Class)와 위치(Bounding Box)를 검출하는 딥러닝 모델 개발을 목표로 합니다. 시각적으로 유사한 수많은 알약들을 정확하게 구분하는 Object Detection 문제를 해결하고, 체계적인 실험 관리를 통해 최적의 모델을 찾아냅니다.
