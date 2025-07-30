@@ -1,6 +1,8 @@
 # tools/train.py
 import torch
 from torch.utils.data import DataLoader, Subset, random_split
+from torch.optim.lr_scheduler import ReduceLROnPlateau
+
 import mlflow
 import mlflow.pytorch # PyTorch 자동 로깅을 위해 임포트 (선택사항이지만 강력함)
 import numpy as np # random seed 설정을 위해
