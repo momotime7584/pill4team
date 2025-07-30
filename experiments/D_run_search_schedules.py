@@ -5,6 +5,5 @@ from utils.experiment_utils import run_grid_search
 grid_schedule = {
     'training.num_epochs': [12, 20],
     'lr_scheduler.type': ['StepLR', 'CosineAnnealingLR'],
-    'training.num_epochs': [3] # 짧은 에폭
 }
 run_grid_search('configs/faster_rcnn_r50_fpn_baseline.py', grid_schedule, "Schedule_Search")
