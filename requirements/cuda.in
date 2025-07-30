@@ -1,0 +1,8 @@
+# requirements/cuda.in
+# CUDA 환경을 위한 추가 설정
+
+# 기본 의존성 파일을 포함
+-r base.in
+
+# PyTorch GPU 버전을 위한 추가 인덱스 URL
+--extra-index-url https://download.pytorch.org/whl/cu121

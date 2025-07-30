@@ -29,7 +29,16 @@ callbacks = dict(
 
 # 1. 재현성 및 환경 설정
 seed = 42
-device = 'cuda' if torch.cuda.is_available() else 'cpu'
+
+device = 'cpu'
+# Apple Silicon (MPS) 지원을 포함한 장치 설정
+if torch.cuda.is_available():
+    device = 'cuda'
+elif torch.backends.mps.is_available(): # macOS GPU (Metal) 사용 가능 여부 체크
+    device = 'mps'
+else:
+    device = 'cpu'
+
 
 # 2. 데이터 로더 설정 (훈련 방법과 무관한 실행 환경)
 data_loaders = dict(
