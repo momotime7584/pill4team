@@ -16,11 +16,11 @@ validation = dict(map_calc_cycle=1)
 # 콜백 (훈련 흐름 제어)
 # EarlyStopping은 총 에폭 수에 따라 patience가 달라질 수 있으므로,
 # 스케줄 파일에 있는 것이 더 적합할 수도 있습니다. (설계 선택)
-
 callbacks = dict(
     early_stopping=dict(
         patience=5
     ),
+    # 로깅 및 체크포인트 (실험 관리 도구)
     checkpoint_saver=dict(
         top_k=3, 
         save_dir='checkpoints'
@@ -43,12 +43,6 @@ else:
 # 2. 데이터 로더 설정 (훈련 방법과 무관한 실행 환경)
 data_loaders = dict(
     num_workers=2
-)
-
-# 3. 로깅 및 체크포인트 (실험 관리 도구)
-checkpoint_saver = dict(
-    top_k=3, 
-    save_dir='checkpoints'
 )
 
 # --- MLOps 설정 ---
