@@ -1,0 +1,4 @@
+# requirements/base.in
+# 모든 환경에서 공통으로 필요한 패키지들
+
+-e . # pyproject.toml 참조

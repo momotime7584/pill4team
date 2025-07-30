@@ -1,0 +1,5 @@
+# requirements/metal.in
+# macOS (Apple Silicon) 환경을 위한 설정
+
+# 기본 의존성 파일을 포함
+-r base.in
