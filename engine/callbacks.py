@@ -21,18 +21,19 @@ class EarlyStopping:
         self.verbose = verbose
         self.counter = 0
         self.best_loss = np.inf
-        self.early_stop = False
 
     def __call__(self, val_loss):
         if self.best_loss - val_loss > self.min_delta:
             self.best_loss = val_loss
             self.counter = 0
+            return False # 개선되었으므로 중단 안 함
         else:
             self.counter += 1
             if self.counter >= self.patience:
                 if self.verbose:
                     print(f"EarlyStopping: 검증 손실이 {self.patience} 에폭 동안 개선되지 않았습니다. 훈련을 중단합니다.")
-                self.early_stop = True
+                return True
+        return False
 
 # 0. 콜백 클래스 정의 (CheckpointSaver 추가)
 class CheckpointSaver:
@@ -47,6 +48,7 @@ class CheckpointSaver:
         self.save_dir = save_dir
         self.top_k = top_k
         self.verbose = verbose
+
         # (loss, filepath) 튜플을 저장할 리스트
         self.checkpoints = []
         if not os.path.exists(self.save_dir):
@@ -62,15 +64,21 @@ class CheckpointSaver:
         if len(self.checkpoints) < self.top_k or val_loss < self.checkpoints[-1][0]:
             # 모델 저장
             torch.save(model.state_dict(), filepath)
-            
+
             # 리스트에 추가
             self.checkpoints.append((val_loss, filepath))
-            
+
             # 손실을 기준으로 오름차순 정렬 (가장 좋은 모델이 맨 앞에 오도록)
             self.checkpoints.sort(key=lambda x: x[0])
 
             if self.verbose:
                 print(f"  -> 체크포인트 저장: {filepath} (검증 손실: {val_loss:.4f})")
+
+            # # --- 최고 성능 모델이 갱신될 때만 MLflow에 아티팩트로 기록 ---
+            # if self.run_id and (len(self.checkpoints) == 1 or val_loss == self.checkpoints[0][0]):
+            #     print(f"  -> 최고 성능 모델을 MLflow에 아티팩트로 기록: {filepath}")
+            #     mlflow.log_artifact(filepath, artifact_path="best_model")
+            # # ---
 
             # 만약 저장된 체크포인트가 K개를 초과하면, 가장 나쁜 모델 삭제
             if len(self.checkpoints) > self.top_k:
