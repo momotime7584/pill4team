@@ -2,6 +2,7 @@
 import torch
 from torch.utils.data import DataLoader, Subset, random_split
 from torch.optim.lr_scheduler import ReduceLROnPlateau
+import dagshub
 
 import mlflow
 import mlflow.pytorch # PyTorch 자동 로깅을 위해 임포트 (선택사항이지만 강력함)
@@ -84,8 +85,19 @@ def main():
     print(f"사용할 장치: {DEVICE}")
 
     # --- MLflow 실험 설정 ---
-    mlflow.set_tracking_uri(cfg.mlflow.tracking_uri)
-    mlflow.set_experiment(cfg.mlflow.experiment_name)
+    # mlflow.set_tracking_uri(cfg.mlflow.tracking_uri)
+    # mlflow.set_experiment(cfg.mlflow.experiment_name)
+
+    # --- 1. DagsHub 및 MLflow 초기화 (가장 먼저 실행) ---
+    # 모든 팀원이 이 부분을 동일하게 공유합니다.
+    dagshub.init(
+        repo_owner='jehakim2210', 
+        repo_name='codeit-project1-team4', 
+        mlflow=True
+    )
+    # 이제 MLflow는 자동으로 DagsHub 서버를 바라보게 됩니다.
+    # mlflow.set_tracking_uri(...) 와 같은 코드는 더 이상 필요 없습니다.
+    mlflow.set_experiment("Pill_Detection_Main_Experiment") # 실험 이름만 지정
 
     # 데이터셋 준비
     dataset = PillDataset(root=cfg.data.root_dir, transforms=get_transform(train=True))
@@ -212,14 +224,22 @@ def main():
             # 1. CheckpointSaver simply saves files based on its Top-K logic.
             checkpoint_saver(avg_val_loss, epoch, model)
 
+
+            
             # 2. The main loop checks if the best score was beaten.
             if avg_val_loss < best_known_val_loss:
                 print(f"  -> ⭐ 최고 성능 갱신! 검증 손실: ({best_known_val_loss:.4f} -> {avg_val_loss:.4f})")
                 best_known_val_loss = avg_val_loss
 
-                # 고유한 경로에 저장
-                artifact_sub_path = f"checkpoints/epoch_{epoch+1}"
-                mlflow.log_artifact(best_model_path, artifact_path=artifact_sub_path)
+                # CheckpointSaver가 관리하는 현재 최고의 모델 경로를 가져옵니다.
+                # checkpoints 리스트는 손실 기준으로 정렬되어 있으므로, 첫 번째 요소가 최고 모델입니다.
+                if checkpoint_saver.checkpoints:
+                    best_model_path = checkpoint_saver.checkpoints[0][1]
+                    print(f"  -> 새로운 최고 모델을 MLflow에 아티팩트로 기록: {os.path.basename(best_model_path)}")
+
+                    # 고유한 경로에 저장
+                    artifact_sub_path = f"checkpoints/epoch_{epoch+1}"
+                    mlflow.log_artifact(best_model_path, artifact_path=artifact_sub_path)
 
             if early_stopper(avg_val_loss):
                 print("EarlyStopping 조건 충족. 훈련을 조기 종료합니다.")
