@@ -2,101 +2,109 @@
 
 ## **1. 프로젝트 개요 (Overview)**
 
-*   **목표:** 이미지 속에 있는 최대 4개의 알약 종류(Class)와 위치(Bounding Box)를 검출하는 딥러닝 모델을 개발합니다.
-*   **핵심 과제:** 시각적으로 유사한 수많은 종류의 알약들을 정확하게 구분하는 '세밀한 분류(Fine-grained Classification)' 문제를 해결합니다.
-*   **평가 지표:** `mAP@0.5` (Mean Average Precision at IoU threshold 0.5)
+본 프로젝트는 이미지 속에 있는 최대 4개의 알약 종류(Class)와 위치(Bounding Box)를 검출하는 딥러닝 모델 개발을 목표로 합니다. 시각적으로 유사한 수많은 알약들을 정확하게 구분하는 Object Detection 문제를 해결하고, 체계적인 실험 관리를 통해 최적의 모델을 찾아냅니다.
 
-## **2. 기술 스택 및 아키텍처 (Tech Stack & Architecture)**
+*   **핵심 과제:** Fine-grained Object Detection
+*   **평가 지표:** `mAP@.50` (Mean Average Precision at IoU threshold 0.5)
 
-*   **주요 라이브러리:** PyTorch, TorchVision, `torchmetrics`, `tqdm`, `uv`
-*   **프로젝트 구조:** 재사용성과 확장성을 고려한 모듈형 구조 채택
-    *   `configs`: 실험 설정을 관리하는 중앙 저장소
-    *   `data`: `PillDataset` 및 데이터 변환 로직 포함
-    *   `models`: Faster R-CNN, (향후 추가될) EfficientDet, DINO 등 모델 아키텍처
-    *   `engine`: 훈련/평가/콜백 등 핵심 로직 포함
-    *   `tools`: 훈련 및 평가를 위한 실행 스크립트
-*   **개발 철학:**
-    *   **TDD (Test-Driven Development):** `pytest`를 활용한 테스트 코드 작성을 통해 코드의 안정성 확보
-    *   **재현성:** `pyproject.toml`과 `uv`를 통한 완벽한 의존성 버전 관리
-    *   **모듈화:** 코드의 각 부분을 독립적으로 개발하고 테스트할 수 있도록 설계
+## **2. 아키텍처 및 기술 스택 (Architecture & Tech Stack)**
 
-## **3. 설치 및 환경 설정 (Installation & Setup)**
+*   **주요 라이브러리:** PyTorch, Albumentations, MLflow, DagsHub, `uv`, `pytest`
+*   **핵심 아키텍처:**
+    *   **Configuration System:** Python(`.py`) 기반의 'Lazy Config' 시스템을 채택하여, 재사용 가능한 설정('`_base_`')과 개별 실험 설정을 명확히 분리합니다.
+    *   **Factory Pattern:** `build_model`, `create_optimizer` 등 팩토리 함수를 통해 Config 파일과 실제 구현을 분리하여 확장성을 극대화합니다.
+    *   **MLOps:** DagsHub를 중앙 서버로 사용하는 MLflow를 통해 모든 실험의 파라미터, 지표, 아티팩트를 추적하고 팀원 간 공유합니다.
+*   **프로젝트 구조:**
+    *   `configs/`: 모든 실험의 '설계도'가 위치하는 곳.
+    *   `data/`, `models/`, `engine/`, `utils/`: 데이터, 모델, 훈련 엔진 등 재사용 가능한 핵심 로직 모듈.
+    *   `tools/`: `train.py`, `evaluate.py` 등 안정적인 핵심 실행 '도구'.
+    *   `experiments/`: 하이퍼파라미터 튜닝 등 다양한 실험을 자동화하는 '실행 스크립트'.
+    *   `tests/`: `pytest`를 사용한 단위 테스트 코드.
 
-> 이 섹션은 새로운 팀원이나 사용자가 프로젝트를 시작하는 방법을 단계별로 안내합니다.
+## **3. 시작하기 (Getting Started)**
 
-1.  **저장소 복제 (Clone Repository):**
+### **3.1. 최초 환경 설정 (First-Time Setup)**
+
+1.  **저장소 복제:**
     ```bash
-    git clone [Your-Repository-URL]
-    cd sprint-ai03-team04
+    git clone https://github.com/momotime7584/pill4team
+    cd pill4team
     ```
-2.  **가상 환경 생성 및 활성화 (Create & Activate Virtual Environment):**
+2.  **DagsHub 인증:**
+    *   [DagsHub 프로젝트](https://dagshub.com/jehakim2210/codeit-project1-team4)에 Collaborator로 참여합니다.
+    *   `pip install dagshub`를 실행합니다.
+    *   Python 스크립트나 노트북에서 `import dagshub;` 후에 실행하여 최초 1회 인증을 완료합니다.
+
+3.  **가상 환경 생성 및 의존성 설치:**
     ```bash
+    # 가상 환경 생성 및 활성화
     uv venv
     source .venv/bin/activate
+
+    # 의존성 잠금 파일 생성 (최초 1회 또는 의존성 변경 시)
+    uv pip compile requirements/cuda.in -o requirements.txt # CUDA 환경
+    # uv pip compile requirements/macos.in -o requirements.txt # macOS 환경
+
+    # 의존성 설치
+    uv pip install -r requirements.txt
+    uv pip install -e .
     ```
-3.  **의존성 설치 (Install Dependencies):**
-    *   **1단계: 고정된 버전의 외부 라이브러리 설치 (재현성 보장)**
-        ```bash
-        uv pip install -r requirements.txt
-        ```
-    *   **2단계: 우리 프로젝트를 편집 가능 모드로 설치**
-        ```bash
-        uv pip install -e .
-        ```
+
+### **3.2. GPU 환경 확인 (NVIDIA GPU)**
+
+`requirements/cuda.in` 파일은 CUDA 12.1 (`cu121`)을 기준으로 작성되었습니다. `nvidia-smi`를 통해 시스템의 CUDA 버전을 확인하고, 필요 시 `.in` 파일의 `--extra-index-url`을 수정하세요.
+
+---
 
 ## **4. 사용 방법 (Usage)**
 
-> 모델을 훈련하고 평가하는 구체적인 명령어를 제공합니다.
-> 모든 스크립트는 프로젝트의 루트 디렉토리에서 실행하는 것을 기준으로 합니다.
+### **4.1. 단일 실험 실행 (Single Experiment)**
 
-1.  **모델 훈련 (Training):**
-    *   `configs/base_config.py` 파일에서 배치 사이즈, 에폭 수 등 원하는 하이퍼파라미터를 수정합니다.
-    *   아래 명령어를 실행하여 훈련을 시작합니다.
-    ```bash
-    python tools/train.py
-    ```
-    *   훈련 과정에서 최고 성능의 모델들은 `checkpoints/` 디렉토리에 자동으로 저장됩니다.
+특정 실험 설계를 실행합니다. `configs/` 폴더에 있는 `.py` 파일을 수정하거나 새로 만들어 실험을 정의할 수 있습니다.
 
-2.  **독립적인 평가 (Evaluation):**
-    *   훈련된 모델 가중치 파일의 성능(mAP)을 측정하려면 아래 명령어를 실행합니다.
-    *   `--checkpoint` 인자는 필수입니다.
-    ```bash
-    # 예시: checkpoints 폴더 안의 특정 모델 평가
-    python tools/evaluate.py --checkpoint checkpoints/EPOCH\(12\)-LOSS\(0.0987\).pth
-    ```
+```bash
+python tools/train.py configs/faster_rcnn_r50_fpn_baseline.py
+```
 
-    *   만약 다른 설정 파일로 평가하고 싶다면 `--config` 인자를 사용하세요.
-    ```bash
-    # 예시: 다른 설정 파일로 평가
-    python tools/evaluate.py --checkpoint [path/to/model] --config configs.another_config
-    ```
+### **4.2. 자동화된 하이퍼파라미터 탐색 (Hyperparameter Tuning)**
 
+`experiments/` 폴더의 스크립트를 사용하여 여러 실험을 자동으로 실행합니다. 스크립트 내부의 `param_grid`를 수정하여 탐색할 파라미터 조합을 정의할 수 있습니다.
 
-3. **최종 제출 파일 생성 (Prediction for Submission):**
+```bash
+python experiments/01_broad_lr_search.py
+```
 
-훈련된 모델을 사용하여 테스트 이미지에 대한 예측을 수행하고, 대회 제출 형식의 `submission.csv` 파일을 생성합니다.
+### **4.3. 모델 평가 (Evaluation)**
 
-   1.  **명령어 실행:**
-       ```bash
-       python tools/predict.py \
-           --checkpoint [사용할 모델의 .pth 파일 경로] \
-           --image_dir [테스트 이미지가 있는 폴더 경로] \
-           --output [결과를 저장할 CSV 파일명 (기본값: submission.csv)]
-       ```
-   2.  **실행 예시:**
-       ```bash
-       python tools/predict.py \
-           --checkpoint checkpoints/EPOCH\(12\)-LOSS\(0.0987\).pth \
-           --image_dir path/to/your/test_images \
-           --output my_submission.csv
-       ```
+훈련된 모델(`.pth`) 파일의 성능(mAP)을 측정합니다.
 
-## **5. 향후 개발 계획 (Future Work)**
+```bash
+python tools/evaluate.py --checkpoint checkpoints/EPOCH-LOSS-best.pth
+```
 
-> 이 프로젝트가 나아갈 방향을 제시하여 기여를 유도하고 로드맵을 공유합니다.
+### **4.4. 최종 제출 파일 생성 (Prediction)**
 
-*   **[ ] 데이터 전처리 고도화:** `tools/preprocess_sam.py`를 구현하여 Segment Anything Model (SAM) 기반의 세그멘테이션 마스크 생성 및 Copy-Paste 데이터 증강 적용
-*   **[ ] 모델 아키텍처 확장:**
-    *   **EfficientDet:** 1-Stage Detector를 구현하여 베이스라인 성능과 비교
-    *   **DINO:** Transformer 기반의 End-to-End 모델을 구현하여 SOTA 성능에 도전
-*   **[ ] MLOps 도입:** `Weights & Biases` 또는 `MLflow`를 연동하여 실험 추적 및 결과 시각화 자동화
+테스트 이미지에 대한 예측을 수행하고, `submission.csv` 파일을 생성합니다.
+
+```bash
+python tools/predict.py \
+    --checkpoint checkpoints/EPOCH-LOSS-best.pth \
+    --image_dir path/to/test_images
+```
+
+---
+
+## **5. MLOps: 실험 추적 및 공유**
+
+모든 훈련 실행은 DagsHub의 중앙 MLflow 서버에 자동으로 기록됩니다.
+
+1.  **실행:** `tools/train.py` 또는 `experiments/` 스크립트를 실행합니다.
+2.  **확인:** [DagsHub Experiments](https://dagshub.com/jehakim2210/codeit-project1-team4/experiments/) 또는 [MLflow UI](https://dagshub.com/jehakim2210/codeit-project1-team4.mlflow)에서 모든 팀원의 실험 결과를 실시간으로 확인하고 비교 분석할 수 있습니다.
+
+---
+
+## **6. 향후 개발 계획 (Future Work)**
+
+*   **[ ] 데이터 전처리 고도화:** SAM(Segment Anything Model)을 활용한 `tools/preprocess_sam.py`를 구현하여 Copy-Paste 증강 적용.
+*   **[ ] 모델 아키텍처 확장:** DETR, DINO 등 최신 아키텍처를 `models/`에 추가.
+*   **[ ] 자동화된 튜닝:** `Optuna`를 `experiments/` 스크립트에 통합하여 더 지능적인 하이퍼파라미터 탐색 수행.
