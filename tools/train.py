@@ -8,7 +8,7 @@ import random
 import os
 import argparse
 import importlib
-# from pprint import pprint
+from pprint import pprint
 
 # 로컬 모듈 임포트
 from data.dataset import PillDataset
