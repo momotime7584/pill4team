@@ -2,9 +2,7 @@
 # 데이터셋 관련 설정만 정의
 
 data = dict(
-    # root_dir='./',
-    # root_dir='/kaggle/input/train-pill',
-    root_dir='/Volumes/Workspace_990Pro/codeit-ai/ai03-level1-project',
+    root_dir='<your-own-path>',
     train_path='train_images',
     ann_path='train_annotations',
 

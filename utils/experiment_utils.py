@@ -13,7 +13,7 @@ def run_grid_search(base_config_path, param_grid, experiment_group_name):
         
         command = [
             'python', 'tools/train.py',
-            base_config_path,
+            '--config', base_config_path,
             '--run_name', run_name
         ]
         
