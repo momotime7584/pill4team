@@ -3,6 +3,8 @@
 ## 0. 발표 자료
 [Notion presentatoin](https://purring-pullover-e72.notion.site/Presentation-240e67a1ff23801bb455e4b8deac0c5e?source=copy_link)
 
+- 프로젝트 관리 페이지 (팀 협업일지 모음)
+  - [알약4팀 프로젝트 관리](https://purring-pullover-e72.notion.site/4-232e67a1ff23808f8a08fdb165675cb8?source=copy_link)
 
 ## **1. 프로젝트 개요 (Overview)**
 
