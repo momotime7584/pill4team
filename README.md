@@ -96,6 +96,30 @@ python tools/predict.py \
     --image_dir path/to/test_images
 ```
 
+
+### **4.5. 결과 재현 및 브랜치 안내 (Reproducing Results & Branch Guide)**
+
+이 프로젝트는 개발 목적에 따라 여러 브랜치로 관리되고 있습니다. 각 브랜치의 역할과 최고 성능을 재현하는 방법은 다음과 같습니다.
+
+*   **`main` 브랜치 (안정 버전 / Stable):**
+    *   **설명:** MLflow, DagsHub, 자동화된 실험 등 완전한 MLOps 파이프라인이 통합된 가장 안정적인 버전입니다. 모든 새로운 기능 개발은 이 브랜치를 기준으로 진행됩니다.
+
+*   **`performance-test` 브랜치 (최고 성능 버전 / Highest Performance):**
+    *   **설명:** 데이터 전처리 및 증강 실험에 집중하여 현재까지 가장 높은 성능을 달성한 개발 브랜치입니다.
+    *   **최고 스코어:** **`mAP@.50 = 0.99451`**
+    *   **재현 방법:** 최고 성능을 직접 재현하려면, 이 브랜치로 전환하여 훈련을 실행해야 합니다.
+        ```bash
+        # 1. performance-test 브랜치로 체크아웃
+        git switch performance-test
+
+        # 2. 해당 브랜치의 가이드에 따라 훈련 실행
+        # (예시 명령어이며, 해당 브랜치의 configs 폴더를 참고하세요)
+        python tools/train.py
+        ```
+
+**향후 계획:** 현재 `performance-test` 브랜치에서 검증된 핵심적인 데이터 처리 및 모델링 기법들을 `main` 브랜치의 MLOps 파이프라인으로 점진적으로 통합하여, 최고 성능을 안정적으로 재현하고 추가적인 개선을 진행할 예정입니다.
+
+
 ---
 
 ## **5. MLOps: 실험 추적 및 공유**
